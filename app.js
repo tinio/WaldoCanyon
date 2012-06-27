@@ -29,6 +29,12 @@ app.configure('production', function(){
 	app.use(express.errorHandler());
 });
 
+// assuming io is the Socket.IO server object
+io.configure(function () { 
+  io.set("transports", ["xhr-polling"]); 
+  io.set("polling duration", 10); 
+});
+
 // Twitter
 var twit = new twitter({
 	consumer_key: 'Ktz7HRoA3PGr6ARNzIXcag',
