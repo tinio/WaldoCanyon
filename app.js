@@ -44,7 +44,7 @@ var twit = new twitter({
 	access_token_secret: 'iM7jvgIA8s5vDUjwCki1G31sJaGQ6746LgHHQtbbE'
 });
 
-twit.stream('statuses/filter', {'track':'#WaldoCanyonFire,#WaldoFire,Waldo,Colorado Springs'}, function(stream) {
+twit.stream('statuses/filter', {'track':'#WaldoCanyonFire,#WaldoFire,#waldocanyon,Waldo,Colorado Springs'}, function(stream) {
 			stream.on('data', function (data) {
 				io.sockets.emit('tweet',data);
 			});
@@ -68,7 +68,11 @@ io.sockets.on('connection', function (socket) {
 // Routes
 
 app.get('/', function(req,res){
-	res.render('index',{title:'Index'})
+	res.render('index',{title:'Waldo Canyon Fire Tracker'})
+});
+
+app.get('/about', function(req,res){
+	res.render('about',{title:'About'})
 });
 
 var port = process.env.PORT || 3000;

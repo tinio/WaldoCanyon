@@ -4,6 +4,10 @@ html
 		title= title
 		link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
 		link(rel='stylesheet', href='/stylesheets/bootstrap-responsive.min.css')
+		style(type="text/css")
+			body { 
+				padding-top: 65px; 
+			}
 		script(src="/socket.io/socket.io.js")
 		script(src="http://code.jquery.com/jquery-latest.js")
 		script(src="/javascripts/soundmanager2-nodebug-jsmin.js")
@@ -11,3 +15,18 @@ html
 		script(type="text/javascript")
 			!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
 	body!= body
+	div(class="navbar navbar-fixed-top")
+		div(class="navbar-inner")
+			div(class="container")
+				ul(class="nav")
+					a(class="brand", href="/") Waldo Canyon Fire Tracker
+					li
+						a(href="/") Home
+					li
+						a(href="/about") About
+					li
+						a(href="http://springsgov.com") Colorado Springs Government
+					li
+						a(href="http://inciweb.org/incident/2929/") Inciweb
+					li
+						a(href="http://waldofire.com") Evacuee help
