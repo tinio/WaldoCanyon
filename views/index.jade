@@ -32,34 +32,65 @@ script
 		}
 	});
 	socket.on('tweet', function (data) {
-		if($('#pictures > a').length > 6) { 
-			$('#pictures').empty(); 
-		}
-		if ($('#checkbox').is(':checked')) {
-			soundManager.play('ding');
-		}
-		if((data.user.screen_name == "Robbie") || (data.user.screen_name == "EPCSheriff") || (data.user.screen_name == "mayorstevebach") || (data.user.screen_name == "springsgov")) {
-			$('body').prepend('<div class="alert alert-error" id="alert_'+data.id+'"><button class="close" data-dismiss="alert">×</button><strong>'+data.user.name+' (@'+data.user.screen_name+')</strong> '+data.text+'</div>');
-			$("#alert_"+data.id).alert()
-			soundManager.play('ding');
-			soundManager.play('ding');
-			soundManager.play('ding');
-			soundManager.play('ding');
-			soundManager.play('ding');
-			setTimeout(function() {$("#alert_"+data.id).alert('close');$("#alert_"+data.id).remove();},10000);
-		} 
+		if (!$('#pause_checkbox').is(':checked')) {
+			if($('#pictures > a').length > 6) { 
+				$('#pictures').empty(); 
+			}
+			if((data.user.screen_name == "Robbie") || (data.user.screen_name == "EPCSheriff") || (data.user.screen_name == "mayorstevebach") || (data.user.screen_name == "springsgov")) {
+				$('body').prepend('<div class="alert alert-error" id="alert_'+data.id+'"><button class="close" data-dismiss="alert">×</button><strong>'+data.user.name+' (@'+data.user.screen_name+')</strong> '+data.text+'</div>');
+				$("#alert_"+data.id).alert()
+				soundManager.play('ding');
+				soundManager.play('ding');
+				soundManager.play('ding');
+				soundManager.play('ding');
+				soundManager.play('ding');
+				setTimeout(function() {$("#alert_"+data.id).alert('close');$("#alert_"+data.id).remove();},10000);
+			} 
 
-		if(data.entities.media) {
-				$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td><img src="'+data.entities.media[0].media_url+'" alt="'+data.text+'"></td><td>'+data.created_at+'</td>');
-				$('#pictures').prepend('<a href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a>');
-		} else {
-				$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td><p>None found</p></td><td>'+data.created_at+'</td>')
+			if(data.entities.media) {
+				if(!$('#rt_checkbox').is(':checked')) {
+					// if no RT found
+					if (data.text.indexOf("RT") == -1) {
+						if ($('#sound_checkbox').is(':checked')) {
+							soundManager.play('ding');
+						}
+						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td><img src="'+data.entities.media[0].media_url+'" alt="'+data.text+'"></td><td>'+data.created_at+'</td>');
+						$('#pictures').prepend('<a href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a>');
+					}
+				} else {
+					if ($('#sound_checkbox').is(':checked')) {
+						soundManager.play('ding');
+					}
+					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td><img src="'+data.entities.media[0].media_url+'" alt="'+data.text+'"></td><td>'+data.created_at+'</td>');
+					$('#pictures').prepend('<a href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a>');
+				}
+			} else {
+				if(!$('#rt_checkbox').is(':checked')) {
+					// if no RT found
+					if (data.text.indexOf("RT") == -1) {
+						if ($('#sound_checkbox').is(':checked')) {
+							soundManager.play('ding');
+						}
+						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td><p>None found</p></td><td>'+data.created_at+'</td>')
+					}
+				} else {
+				if ($('#sound_checkbox').is(':checked')) {
+					soundManager.play('ding');
+				}
+					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td><p>None found</p></td><td>'+data.created_at+'</td>')
+				}
+			}
 		}
 	});
 
+
 div(id="pictures", style="text-align:center;")
-input(type="checkbox", id="checkbox", name="checkbox", value="sound_on")
-p Sound on
+p Sound
+	input(type="checkbox", id="sound_checkbox", name="sound_checkbox", value="sound")
+p Pause
+	input(type="checkbox", id="pause_checkbox", name="pause_checkbox", value="pause")
+p Retweets enabled
+	input(type="checkbox", id="rt_checkbox", name="rt_checkbox", value="rt_enabled", checked="checked")
 table(class="table table-striped table-bordered")
 	thead
 		tr
