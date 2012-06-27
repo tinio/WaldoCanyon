@@ -1,4 +1,19 @@
 script
+	// pass in the 'created_at' string returned from twitter //
+	// stamp arrives formatted as Tue Apr 07 22:52:51 +0000 2009 //
+	function parseTwitterDate($stamp)
+	{		
+	// convert to local string and remove seconds and year //		
+		var date = new Date(Date.parse($stamp)).toLocaleString().substr(0, 16);
+	// get the two digit hour //
+		var hour = date.substr(-5, 2);
+	// convert to AM or PM //
+		var ampm = hour<12 ? ' AM' : ' PM';
+		if (hour>12) hour-= 12;
+		if (hour==0) hour = 12;
+	// return the formatted string //
+		return date.substr(0, 11)+ hour + date.substr(13) + ampm;
+	}
 	var socket = io.connect('/');
 	soundManager.setup({
 		url: '/swf',
@@ -17,6 +32,9 @@ script
 		}
 	});
 	socket.on('tweet', function (data) {
+		if($('#pictures > a').length > 6) { 
+			$('#pictures').empty(); 
+		}
 		if ($('#checkbox').is(':checked')) {
 			soundManager.play('ding');
 		}
@@ -32,14 +50,14 @@ script
 		} 
 
 		if(data.entities.media) {
-				//$('#tweets').prepend('<p>'+data.text+'</p><br><img src="'+data.entities.media[0].media_url+'" alt="'+data.text+'">');
-				$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td>'+data.user.name+' (@'+data.user.screen_name+')</td><td><img src="'+data.entities.media[0].media_url+'" alt="'+data.text+'"></td><td><a href="https://twitter.com/'+data.user.screen_name+'" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @'+data.user.screen_name+'</a></td>');
+				$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td><img src="'+data.entities.media[0].media_url+'" alt="'+data.text+'"></td><td>'+data.created_at+'</td>');
+				$('#pictures').prepend('<a href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a>');
 		} else {
-				//$('#tweets').prepend('<p>'+data.text+'</p>');
-				$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td>'+data.user.name+' (@'+data.user.screen_name+')</td><td><p>None found</p></td><td><a href="https://twitter.com/'+data.user.screen_name+'" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @'+data.user.screen_name+'</a></td>')
+				$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td><p>None found</p></td><td>'+data.created_at+'</td>')
 		}
 	});
 
+div(id="pictures", style="text-align:center;")
 input(type="checkbox", id="checkbox", name="checkbox", value="sound_on")
 p Sound on
 table(class="table table-striped table-bordered")
@@ -48,6 +66,6 @@ table(class="table table-striped table-bordered")
 			th Tweet
 			th User
 			th Picture
-			th Actions
+			th Time
 	tbody(id="tweets")
 
