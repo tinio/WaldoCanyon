@@ -33,6 +33,7 @@ app.configure('production', function(){
 io.configure(function () { 
   io.set("transports", ["xhr-polling"]); 
   io.set("polling duration", 10); 
+  io.set("log level", 0)
 });
 
 // Twitter

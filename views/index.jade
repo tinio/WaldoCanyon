@@ -1,13 +1,13 @@
 script
-	var socket = io.connect('http://waldofire.herokuapp.com');
+	var socket = io.connect('http://localhost:3000');
 	soundManager.setup({
-		url: 'http://waldofire.herokuapp.com/swf',
+		url: '/swf',
 		flashVersion: 9, // optional: shiny features (default = 8)
 		useFlashBlock: false, // optionally, enable when you're ready to dive in/**
 		onready: function() {
 			soundManager.createSound({
 						id: 'ding',
-						url: 'http://waldofire.herokuapp.com/snd/ding.wav',
+						url: '/snd/ding.wav',
 						autoLoad: true,
 						autoPlay: false,
 						onload: function() {
@@ -18,27 +18,26 @@ script
 		}
 	});
 	socket.on('tweet', function (data) {
-		console.log(data);
+		if ($('#checkbox').is(':checked')) {
+			soundManager.play('ding');
+		}
 		if((data.user.screen_name == "Robbie") || (data.user.screen_name == "EPCSheriff") || (data.user.screen_name == "mayorstevebach") || (data.user.screen_name == "springsgov")) {
 			$('body').prepend('<div class="alert alert-error" id="alert_'+data.id+'"><button class="close" data-dismiss="alert">×</button><strong>'+data.user.name+' (@'+data.user.screen_name+')</strong> '+data.text+'</div>');
 			$("#alert_"+data.id).alert()
 			setTimeout(function() {$("#alert_"+data.id).alert('close');$("#alert_"+data.id).remove();},10000);
-		} else {
-			if(data.entities.media) {
+		} 
+
+		if(data.entities.media) {
 				//$('#tweets').prepend('<p>'+data.text+'</p><br><img src="'+data.entities.media[0].media_url+'" alt="'+data.text+'">');
 				$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td>'+data.user.name+' (@'+data.user.screen_name+')</td><td><img src="'+data.entities.media[0].media_url+'" alt="'+data.text+'"></td><td><a href="https://twitter.com/'+data.user.screen_name+'" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @'+data.user.screen_name+'</a></td>');
-			} else {
+		} else {
 				//$('#tweets').prepend('<p>'+data.text+'</p>');
 				$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td>'+data.user.name+' (@'+data.user.screen_name+')</td><td><p>None found</p></td><td><a href="https://twitter.com/'+data.user.screen_name+'" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @'+data.user.screen_name+'</a></td>')
-			}
 		}
-		$('#checkbox').change(function(){
-			soundManager.play('ding');
-		});
 	});
 
-Sound on 
-	input(type="checkbox", id="checkbox", name="checkbox", value="sound_on")
+input(type="checkbox", id="checkbox", name="checkbox", value="sound_on", checked="checked")
+p Sound on
 table(class="table table-striped table-bordered")
 	thead
 		tr
