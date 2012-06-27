@@ -29,6 +29,15 @@ script
 						},
 						volume: 100
 					});
+			soundManager.createSound({
+						id: 'streza',
+						url: '/snd/Codec.wav',
+						autoLoad: true,
+						autoPlay: false,
+						onload: function() {
+						},
+						volume: 100
+					});
 		}
 	});
 	socket.on('tweet', function (data) {
@@ -54,12 +63,18 @@ script
 						if ($('#sound_checkbox').is(':checked')) {
 							soundManager.play('ding');
 						}
+						if ($('#streza_sound_checkbox').is(':checked')) {
+							soundManager.play('streza');
+						}
 						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td><img src="'+data.entities.media[0].media_url+'" alt="'+data.text+'"></td><td>'+data.created_at+'</td>');
 						$('#pictures').prepend('<a href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a>');
 					}
 				} else {
 					if ($('#sound_checkbox').is(':checked')) {
 						soundManager.play('ding');
+					}
+					if ($('#streza_sound_checkbox').is(':checked')) {
+						soundManager.play('streza');
 					}
 					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td><img src="'+data.entities.media[0].media_url+'" alt="'+data.text+'"></td><td>'+data.created_at+'</td>');
 					$('#pictures').prepend('<a href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a>');
@@ -71,11 +86,17 @@ script
 						if ($('#sound_checkbox').is(':checked')) {
 							soundManager.play('ding');
 						}
+						if ($('#streza_sound_checkbox').is(':checked')) {
+							soundManager.play('streza');
+						}
 						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td><p>None found</p></td><td>'+data.created_at+'</td>')
 					}
 				} else {
 				if ($('#sound_checkbox').is(':checked')) {
 					soundManager.play('ding');
+				}
+				if ($('#streza_sound_checkbox').is(':checked')) {
+					soundManager.play('streza');
 				}
 					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+data.text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td><p>None found</p></td><td>'+data.created_at+'</td>')
 				}
@@ -87,6 +108,8 @@ script
 div(id="pictures", style="text-align:center;")
 p Sound
 	input(type="checkbox", id="sound_checkbox", name="sound_checkbox", value="sound")
+p Steve Streza (@SteveStreza) Mode &copy; 
+	input(type="checkbox", id="streza_sound_checkbox", name="streza_sound_checkbox", value="streza_sound")
 p Pause
 	input(type="checkbox", id="pause_checkbox", name="pause_checkbox", value="pause")
 p Retweets enabled
