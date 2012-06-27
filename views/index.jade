@@ -18,7 +18,8 @@ script
 	soundManager.setup({
 		url: '/swf',
 		flashVersion: 9, // optional: shiny features (default = 8)
-		useFlashBlock: false, // optionally, enable when you're ready to dive in/**
+		useFlashBlock: true, // optionally, enable when you're ready to dive in/**
+		useHTML5Audio: true,
 		onready: function() {
 			soundManager.createSound({
 						id: 'ding',
