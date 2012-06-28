@@ -31,7 +31,7 @@ app.configure('production', function(){
 
 // assuming io is the Socket.IO server object
 io.configure(function () { 
-  io.set("transports", ["xhr-polling", "flashsocket", "jsonp-polling"]); 
+  io.set("transports", ["xhr-polling", "flashsocket"]); 
   io.set("polling duration", 10); 
   io.set("log level", 0)
 });
