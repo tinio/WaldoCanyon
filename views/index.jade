@@ -64,6 +64,13 @@ script
 		}
 		var screen_name = Linkify('@'+data.user.screen_name);
 		var tweet_link = "<a target='_blank' href='http://twitter.com/"+data.user.screen_name+"/status/"+data.id_str+"'>Link</a>";
+		if ($('#sound_checkbox').is(':checked')) {
+			soundManager.play('ding');
+		}
+		if ($('#streza_sound_checkbox').is(':checked')) {
+			soundManager.play('streza');
+		}
+		
 		if (!$('#pause_checkbox').is(':checked')) {
 			if((data.user.screen_name == "Robbie") || (data.user.screen_name == "EPCSheriff") || (data.user.screen_name == "mayorstevebach") || (data.user.screen_name == "springsgov")) {
 				$('#official_tweets').prepend('<p>'+data.user.name+' ('+screen_name+')<br> '+text+'</p><hr>');
@@ -73,34 +80,16 @@ script
 			if(data.entities.media) {
 				if(!$('#rt_checkbox').is(':checked')) {
 					if (data.text.indexOf("RT") == -1) {
-						if ($('#sound_checkbox').is(':checked')) {
-							soundManager.play('ding');
-						}
-						if ($('#streza_sound_checkbox').is(':checked')) {
-							soundManager.play('streza');
-						}
 						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+' ['+tweet_link+']</td>');
 						$('#pictures').prepend('<a target="_blank" href="'+data.entities.media[0].expanded_url+'">Picture by: '+data.user.name+' ('+screen_name+')</a><br><a target="_blank" href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a><hr>');
 					}
 				} else {
-					if ($('#sound_checkbox').is(':checked')) {
-						soundManager.play('ding');
-					}
-					if ($('#streza_sound_checkbox').is(':checked')) {
-						soundManager.play('streza');
-					}
 					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+' ['+tweet_link+']</td>');
 					$('#pictures').prepend('<a target="_blank" href="'+data.entities.media[0].expanded_url+'">Picture by: '+data.user.name+' ('+screen_name+')</a><br><a target="_blank" href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a><hr>');
 				}
 			} else {
 				if(!$('#rt_checkbox').is(':checked')) {
 					if (data.text.indexOf("RT") == -1) {
-						if ($('#sound_checkbox').is(':checked')) {
-							soundManager.play('ding');
-						}
-						if ($('#streza_sound_checkbox').is(':checked')) {
-							soundManager.play('streza');
-						}
 						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+' ['+tweet_link+']</td>')
 					}
 				} else {
