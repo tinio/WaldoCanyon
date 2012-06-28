@@ -1,16 +1,16 @@
 script
 	function fixTwitterURL(text,urls) {
 			$.each(urls,function(){
-				url1 = '<a href="'+this.expanded_url+'">'+this.expanded_url+'</a>';
+				url1 = '<a target="_blank" href="'+this.expanded_url+'">'+this.expanded_url+'</a>';
 				text = text.replace(this.url, url1);
 			});
 			
 			text = text.replace(/(^|)@(\w+)/gi, function (s) {
-					return '<a href="http://twitter.com/' + s + '">' + s + '</a>';
+					return '<a target="_blank" href="http://twitter.com/' + s + '">' + s + '</a>';
 			});
 
 			text = text.replace(/(^|)#(\w+)/gi, function (s) {
-					return '<a href="http://search.twitter.com/search?q=' + s.replace(/#/,'%23') + '">' + s + '</a>';
+					return '<a target="_blank" href="http://search.twitter.com/search?q=' + s.replace(/#/,'%23') + '">' + s + '</a>';
 			});
 			return text;
 			return final;
@@ -21,11 +21,11 @@ script
 			});*/
 
 			text = text.replace(/(^|)@(\w+)/gi, function (s) {
-					return '<a href="http://twitter.com/' + s + '">' + s + '</a>';
+					return '<a target="_blank" href="http://twitter.com/' + s + '">' + s + '</a>';
 			});
 
 			text = text.replace(/(^|)#(\w+)/gi, function (s) {
-					return '<a href="http://search.twitter.com/search?q=' + s.replace(/#/,'%23') + '">' + s + '</a>';
+					return '<a target="_blank" href="http://search.twitter.com/search?q=' + s.replace(/#/,'%23') + '">' + s + '</a>';
 			});
 			return text;
 	}
@@ -55,14 +55,16 @@ script
 						volume: 100
 					});
 		}
-	});
+	}); 
 	socket.on('tweet', function (data) {
+		console.log(data);
 		if(data.entities.urls) {
 			var text = fixTwitterURL(data.text,data.entities.urls);
 		} else {
 			var text = Linkify(data.text);
 		}
 		var screen_name = Linkify('@'+data.user.screen_name);
+		var tweet_link = "<a target='_blank' href='http://twitter.com/"+data.user.screen_name+"/status/"+data.id_str+"'>Link</a>";
 		if (!$('#pause_checkbox').is(':checked')) {
 			if((data.user.screen_name == "Robbie") || (data.user.screen_name == "EPCSheriff") || (data.user.screen_name == "mayorstevebach") || (data.user.screen_name == "springsgov")) {
 				$('#official_tweets').prepend('<p>'+data.user.name+' ('+screen_name+')<br> '+text+'</p><hr>');
@@ -78,8 +80,8 @@ script
 						if ($('#streza_sound_checkbox').is(':checked')) {
 							soundManager.play('streza');
 						}
-						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+'</td>');
-						$('#pictures').prepend('<a href="'+data.entities.media[0].expanded_url+'">Picture by: '+data.user.name+' ('+screen_name+')</a><br><a href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a><hr>');
+						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+' ['+tweet_link+']</td>');
+						$('#pictures').prepend('<a target="_blank" href="'+data.entities.media[0].expanded_url+'">Picture by: '+data.user.name+' ('+screen_name+')</a><br><a target="_blank" href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a><hr>');
 					}
 				} else {
 					if ($('#sound_checkbox').is(':checked')) {
@@ -88,8 +90,8 @@ script
 					if ($('#streza_sound_checkbox').is(':checked')) {
 						soundManager.play('streza');
 					}
-					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+'</td>');
-					$('#pictures').prepend('<a href="'+data.entities.media[0].expanded_url+'">Picture by: '+data.user.name+' ('+screen_name+')</a><br><a href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a><hr>');
+					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+' ['+tweet_link+']</td>');
+					$('#pictures').prepend('<a target="_blank" href="'+data.entities.media[0].expanded_url+'">Picture by: '+data.user.name+' ('+screen_name+')</a><br><a target="_blank" href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a><hr>');
 				}
 			} else {
 				if(!$('#rt_checkbox').is(':checked')) {
@@ -100,7 +102,7 @@ script
 						if ($('#streza_sound_checkbox').is(':checked')) {
 							soundManager.play('streza');
 						}
-						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+'</td>')
+						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+' ['+tweet_link+']</td>')
 					}
 				} else {
 				if ($('#sound_checkbox').is(':checked')) {
@@ -109,7 +111,7 @@ script
 				if ($('#streza_sound_checkbox').is(':checked')) {
 					soundManager.play('streza');
 				}
-					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+'</td>')
+					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+' ['+tweet_link+']</td>')
 				}
 				//'
 			}
