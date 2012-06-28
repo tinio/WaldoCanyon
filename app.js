@@ -39,20 +39,20 @@ io.configure(function () {
 // Twitter
 
 //WaldoCanyon
-var twit = new twitter({
+/*var twit = new twitter({
 	consumer_key: 'Ktz7HRoA3PGr6ARNzIXcag',
 	consumer_secret: 'ZUsnNEhQ3vXjx2ZjLtuUYUyiCJtmYkuG3wNtRC2M',
 	access_token_key: '46713-aqtHStll8KiHOKjQSZQdqdMWXitypZkThBA47o96J0',
 	access_token_secret: 'iM7jvgIA8s5vDUjwCki1G31sJaGQ6746LgHHQtbbE'
-});
+});*/
 
 //WaldoCanyonTest
-/*var twit = new twitter({
+var twit = new twitter({
 	consumer_key: 'WAJWosqcXWcYAhL3pFd9Q',
 	consumer_secret: '27JJV5ml8ukMkcBrVRB9xTG22YzpSJAQn4FrydnGfXY',
 	access_token_key: '46713-ezpnVWoQtVfuBHRMjJImPHvQMXIq4uXIIVX9MFQGDY',
 	access_token_secret: 'cfAB65cK4tMyLeKmir4bPbThmNvEqJ4YEJ8JFco88'
-});*/
+});
 
 twit.stream('statuses/filter', {'track':'#WaldoCanyonFire,#WaldoFire,#waldocanyon,Colorado Springs'}, function(stream) {
 	stream.on('data', function (data) {

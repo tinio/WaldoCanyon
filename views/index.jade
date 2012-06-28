@@ -29,7 +29,7 @@ script
 			});
 			return text;
 	}
-	var socket = io.connect('/');
+	var socket = io.connect('http://waldocanyonfires.com:80/');
 	soundManager.setup({
 		url: '/swf',
 		flashVersion: 9, // optional: shiny features (default = 8)
@@ -57,7 +57,6 @@ script
 		}
 	}); 
 	socket.on('tweet', function (data) {
-		console.log(data);
 		if(data.entities.urls) {
 			var text = fixTwitterURL(data.text,data.entities.urls);
 		} else {
