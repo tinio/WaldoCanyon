@@ -4,7 +4,8 @@
  */
 
 var express = require('express')
-	, twitter = require('ntwitter');
+	, twitter = require('ntwitter')
+	, mongoose = require('mongoose');
 
 var app = module.exports = express.createServer();
 
