@@ -34,7 +34,6 @@ script
 		url: '/swf',
 		flashVersion: 9, // optional: shiny features (default = 8)
 		useFlashBlock: true, // optionally, enable when you're ready to dive in/**
-		useHTML5Audio: true,
 		onready: function() {
 			soundManager.createSound({
 						id: 'ding',
@@ -70,7 +69,7 @@ script
 		if ($('#streza_sound_checkbox').is(':checked')) {
 			soundManager.play('streza');
 		}
-		
+
 		if (!$('#pause_checkbox').is(':checked')) {
 			if((data.user.screen_name == "Robbie") || (data.user.screen_name == "EPCSheriff") || (data.user.screen_name == "mayorstevebach") || (data.user.screen_name == "springsgov")) {
 				$('#official_tweets').prepend('<p>'+data.user.name+' ('+screen_name+')<br> '+text+'</p><hr>');
