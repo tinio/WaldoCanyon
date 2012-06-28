@@ -1,24 +1,33 @@
 script
-	// pass in the 'created_at' string returned from twitter //
-	// stamp arrives formatted as Tue Apr 07 22:52:51 +0000 2009 //
-	function parseTwitterDate($stamp)
-	{		
-	// convert to local string and remove seconds and year //		
-		var date = new Date(Date.parse($stamp)).toLocaleString().substr(0, 16);
-	// get the two digit hour //
-		var hour = date.substr(-5, 2);
-	// convert to AM or PM //
-		var ampm = hour<12 ? ' AM' : ' PM';
-		if (hour>12) hour-= 12;
-		if (hour==0) hour = 12;
-	// return the formatted string //
-		return date.substr(0, 11)+ hour + date.substr(13) + ampm;
-	}
-
 	function fixTwitterURL(text,urls) {
-			var url = '<a href="'+urls.expanded_url+'">'+urls.expanded_url+'</a>';
-			var final = text.replace(urls.url, url);
+			$.each(urls,function(){
+				url1 = '<a href="'+this.expanded_url+'">'+this.expanded_url+'</a>';
+				text = text.replace(this.url, url1);
+			});
+			
+			text = text.replace(/(^|)@(\w+)/gi, function (s) {
+					return '<a href="http://twitter.com/' + s + '">' + s + '</a>';
+			});
+
+			text = text.replace(/(^|)#(\w+)/gi, function (s) {
+					return '<a href="http://search.twitter.com/search?q=' + s.replace(/#/,'%23') + '">' + s + '</a>';
+			});
+			return text;
 			return final;
+	}
+	function Linkify(text) {
+			/*text = text.replace(/(https?:\/\/\S+)/gi, function (s) {
+					return '<a href="' + s + '">' + s + '</a>';
+			});*/
+
+			text = text.replace(/(^|)@(\w+)/gi, function (s) {
+					return '<a href="http://twitter.com/' + s + '">' + s + '</a>';
+			});
+
+			text = text.replace(/(^|)#(\w+)/gi, function (s) {
+					return '<a href="http://search.twitter.com/search?q=' + s.replace(/#/,'%23') + '">' + s + '</a>';
+			});
+			return text;
 	}
 	var socket = io.connect('/');
 	soundManager.setup({
@@ -47,28 +56,28 @@ script
 					});
 		}
 	});
+
+	if (window.webkitNotifications) {
+	  console.log("Notifications are supported!");
+	} else {
+	  console.log("Notifications are not supported for this Browser/OS version yet.");
+	}
+
 	socket.on('tweet', function (data) {
-		console.log(data);
-		if(data.entities.urls[0]) {
-			var text = fixTwitterURL(data.text,data.entities.urls[0]);
+		if(data.entities.urls) {
+			var text = fixTwitterURL(data.text,data.entities.urls);
 		} else {
-			var text = data.text;
+			var text = Linkify(data.text);
 		}
+		var screen_name = Linkify('@'+data.user.screen_name);
 		if (!$('#pause_checkbox').is(':checked')) {
-			/*if($('#pictures > a').length > 6) { 
-				$('#pictures').empty(); 
-			}*/
 			if((data.user.screen_name == "Robbie") || (data.user.screen_name == "EPCSheriff") || (data.user.screen_name == "mayorstevebach") || (data.user.screen_name == "springsgov")) {
-				//$('body').prepend('<div class="alert alert-error" id="alert_'+data.id+'"><button class="close" data-dismiss="alert">×</button><strong>'+data.user.name+' (@'+data.user.screen_name+')</strong> '+text+'</div>');
-				//$("#alert_"+data.id).alert()
-				$('#official_tweets').prepend('<p>'+data.user.name+' (@'+data.user.screen_name+')</strong> '+text+'</p><hr>');
+				$('#official_tweets').prepend('<p>'+data.user.name+' ('+screen_name+')<br> '+text+'</p><hr>');
 				soundManager.play('ding');
-				//setTimeout(function() {$("#alert_"+data.id).alert('close');$("#alert_"+data.id).remove();},10000);
 			} 
 
 			if(data.entities.media) {
 				if(!$('#rt_checkbox').is(':checked')) {
-					// if no RT found
 					if (data.text.indexOf("RT") == -1) {
 						if ($('#sound_checkbox').is(':checked')) {
 							soundManager.play('ding');
@@ -76,8 +85,8 @@ script
 						if ($('#streza_sound_checkbox').is(':checked')) {
 							soundManager.play('streza');
 						}
-						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td>'+data.created_at+'</td>');
-						$('#pictures').prepend('<a href="'+data.entities.media[0].expanded_url+'">Picture by: '+data.user.name+' (@'+data.user.screen_name+')</a><br><a href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a><hr>');
+						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+'</td>');
+						$('#pictures').prepend('<a href="'+data.entities.media[0].expanded_url+'">Picture by: '+data.user.name+' ('+screen_name+')</a><br><a href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a><hr>');
 					}
 				} else {
 					if ($('#sound_checkbox').is(':checked')) {
@@ -86,12 +95,11 @@ script
 					if ($('#streza_sound_checkbox').is(':checked')) {
 						soundManager.play('streza');
 					}
-					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td>'+data.created_at+'</td>');
-					$('#pictures').prepend('<a href="'+data.entities.media[0].expanded_url+'">Picture by: '+data.user.name+' (@'+data.user.screen_name+')</a><br><a href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a><hr>');
+					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+'</td>');
+					$('#pictures').prepend('<a href="'+data.entities.media[0].expanded_url+'">Picture by: '+data.user.name+' ('+screen_name+')</a><br><a href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a><hr>');
 				}
 			} else {
 				if(!$('#rt_checkbox').is(':checked')) {
-					// if no RT found
 					if (data.text.indexOf("RT") == -1) {
 						if ($('#sound_checkbox').is(':checked')) {
 							soundManager.play('ding');
@@ -99,7 +107,7 @@ script
 						if ($('#streza_sound_checkbox').is(':checked')) {
 							soundManager.play('streza');
 						}
-						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td>'+data.created_at+'</td>')
+						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+'</td>')
 					}
 				} else {
 				if ($('#sound_checkbox').is(':checked')) {
@@ -108,13 +116,21 @@ script
 				if ($('#streza_sound_checkbox').is(':checked')) {
 					soundManager.play('streza');
 				}
-					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+text+'</td><td><a href="http://twitter.com/'+data.user.screen_name+'">'+data.user.name+' (@'+data.user.screen_name+')</a></td><td>'+data.created_at+'</td>')
+					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+'</td>')
 				}
+				//'
 			}
 		}
 	});
 
 div(class="container-fluid")
+	div(class="row-fluid")
+		div(class="span2")
+		div(class="span8")
+			h1 Welcome
+			p This is the #WaldoCanyonFire tracker. Tweets will start to flow in the center column shortly. Pictures automatically get put in the left sidebar. If the city tweets anything, it will be put in the right side and ding (no matter your sound preferences).
+				You can use the checkboxes below to change your settings. Uncheck the Retweet box to "slow down" the feed. Select the Pause checkbox to pause the feed for a while. Check the sound box to make the page "ding" everytime that a new tweet comes in.
+		div(class="span2")
 	div(class="row-fluid")
 		div(class="span2")
 			h1 Pictures
@@ -130,11 +146,9 @@ div(class="container-fluid")
 			table(class="table table-striped table-bordered")
 				thead
 					tr
-						th Tweet
 						th User
-						th Time
+						th Tweet
 				tbody(id="tweets")
 		div(class="span2")
 			h1 Official Messages
 			div(id="official_tweets")
-
