@@ -55,6 +55,9 @@ script
 					});
 		}
 	}); 
+	socket.on('instagram', function(data){
+		console.log(data);
+	})
 	socket.on('tweet', function (data) {
 		if(data.entities.urls) {
 			var text = fixTwitterURL(data.text,data.entities.urls);
@@ -79,17 +82,17 @@ script
 			if(data.entities.media) {
 				if(!$('#rt_checkbox').is(':checked')) {
 					if (data.text.indexOf("RT") == -1) {
-						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+' ['+tweet_link+']</td>');
+						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'<br><a href="https://twitter.com/'+data.user.screen_name+'" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @'+data.user.screen_name+'</a></td><td>'+text+' ['+tweet_link+']<br><span class="intent-meta"><a class="in-reply-to" href="http://twitter.com/intent/tweet?in_reply_to='+data.id_str+'">Reply</a><a class="retweet" href="http://twitter.com/intent/retweet?tweet_id='+data.id_str+'">Retweet</a><a class="favorite" href="http://twitter.com/intent/favorite?tweet_id='+data.id_str+'">Favorite</a></span></td>');
 						$('#pictures').prepend('<a target="_blank" href="'+data.entities.media[0].expanded_url+'">Picture by: '+data.user.name+' ('+screen_name+')</a><br><a target="_blank" href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a><hr>');
 					}
 				} else {
-					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+' ['+tweet_link+']</td>');
+					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'<br><a href="https://twitter.com/'+data.user.screen_name+'" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @'+data.user.screen_name+'</a></td><td>'+text+' ['+tweet_link+']<br><span class="intent-meta"><a class="in-reply-to" href="http://twitter.com/intent/tweet?in_reply_to='+data.id_str+'">Reply</a><a class="retweet" href="http://twitter.com/intent/retweet?tweet_id='+data.id_str+'">Retweet</a><a class="favorite" href="http://twitter.com/intent/favorite?tweet_id='+data.id_str+'">Favorite</a></span></td>');
 					$('#pictures').prepend('<a target="_blank" href="'+data.entities.media[0].expanded_url+'">Picture by: '+data.user.name+' ('+screen_name+')</a><br><a target="_blank" href="'+data.entities.media[0].expanded_url+'" target="_blank"><img class="picture" src="'+data.entities.media[0].media_url+'" width="300" height="300"></a><hr>');
 				}
 			} else {
 				if(!$('#rt_checkbox').is(':checked')) {
 					if (data.text.indexOf("RT") == -1) {
-						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+' ['+tweet_link+']</td>')
+						$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'<br><a href="https://twitter.com/'+data.user.screen_name+'" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @'+data.user.screen_name+'</a></td><td>'+text+' ['+tweet_link+']<br><span class="intent-meta"><a class="in-reply-to" href="http://twitter.com/intent/tweet?in_reply_to='+data.id_str+'">Reply</a><a class="retweet" href="http://twitter.com/intent/retweet?tweet_id='+data.id_str+'">Retweet</a><a class="favorite" href="http://twitter.com/intent/favorite?tweet_id='+data.id_str+'">Favorite</a></span></td>')
 					}
 				} else {
 				if ($('#sound_checkbox').is(':checked')) {
@@ -98,21 +101,32 @@ script
 				if ($('#streza_sound_checkbox').is(':checked')) {
 					soundManager.play('streza');
 				}
-					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'</td><td>'+text+' ['+tweet_link+']</td>')
+					$('#tweets').prepend('<tr class="tweet" id="tweet_'+data.id+'"><td>'+screen_name+'<br><a href="https://twitter.com/'+data.user.screen_name+'" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @'+data.user.screen_name+'</a></td><td>'+text+' ['+tweet_link+']<br><span class="intent-meta"><a class="in-reply-to" href="http://twitter.com/intent/tweet?in_reply_to='+data.id_str+'">Reply</a><a class="retweet" href="http://twitter.com/intent/retweet?tweet_id='+data.id_str+'">Retweet</a><a class="favorite" href="http://twitter.com/intent/favorite?tweet_id='+data.id_str+'">Favorite</a></span></td>')
 				}
 				//'
 			}
 		}
 	});
 
-div(class="container-fluid")
-	div(class="row-fluid")
+div(class="container")
+	div(class="row")
 		div(class="span2")
+			h3 Evacuations
+			ul
+				li Manitou Springs - Voluntary
+				li Woodland Park - Mandatory
 		div(class="span8")
 			h1 Welcome
 			p This is the #WaldoCanyonFire tracker. Tweets will start to flow in the center column shortly. Pictures automatically get put in the left sidebar. If the city tweets anything, it will be put in the right side and ding (no matter your sound preferences).
 				You can use the checkboxes below to change your settings. Uncheck the Retweet box to "slow down" the feed. Select the Pause checkbox to pause the feed for a while. Check the sound box to make the page "ding" everytime that a new tweet comes in.
 		div(class="span2")
+			h3 Stats
+			ul
+				li 32,000 acres burned
+				li 200-300 homes destroyed
+				li 1004 firefighters
+				li 0 injuries
+				li 0 fatalaties
 	div(class="row-fluid")
 		div(class="span2")
 			h1 Pictures
@@ -125,6 +139,12 @@ div(class="container-fluid")
 				input(type="checkbox", id="pause_checkbox", name="pause_checkbox", value="pause")
 			p Retweets enabled
 				input(type="checkbox", id="rt_checkbox", name="rt_checkbox", value="rt_enabled", checked="checked")
+
+			div(class="btn-group", data-toggle="buttons-checkbox")
+				button(class="btn btn-primary", id="sound_checkbox") Sound
+				button(class="btn btn-primary", id="pause_checkbox") Pause
+				button(class="btn btn-primary", id="rt_checkbox") Retweets enabled
+
 			table(class="table table-striped table-bordered")
 				thead
 					tr
